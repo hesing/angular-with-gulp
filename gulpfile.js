@@ -18,6 +18,7 @@ var fs = require("fs"),
 	size = require('gulp-size'),
 	del = require('del'),
 	ngAnnotate = require('gulp-ng-annotate'),
+	sourcemaps = require('gulp-sourcemaps'),
 	browsersync = require('browser-sync'),
 	pkg = require('./package.json'),
 	config = require('./build-config.json');
@@ -61,7 +62,7 @@ var
 		watch: [source + 'scss/**/*', '!' + imguri.out + imguri.filename],
 		out: dest + 'css/',
 		sassOpts: {
-			outputStyle: 'nested',
+			outputStyle: 'nested', // compressed
 			imagePath: '../images',
 			precision: 3,
 			errLogToConsole: true
@@ -104,8 +105,6 @@ var
         var jsFiles = [],
         	indexContents,
             scriptTagsPattern,
-            cssTagsPattern,
-            templateFilePath,
             match;
 
         // if (!grunt.file.exists(indexPath)) {
@@ -177,11 +176,12 @@ gulp.task('fonts', function() {
 // compile Sass
 gulp.task('sass', ['imguri'], function() {
 	return gulp.src(css.in)
+		.pipe(sourcemaps.init())
 		.pipe(sass(css.sassOpts))
-
-		.pipe(size({title: 'CSS in '}))
-		.pipe(pleeease(css.pleeeaseOpts))
-		.pipe(size({title: 'CSS out '}))
+		.pipe(sourcemaps.write())
+		// .pipe(size({title: 'CSS in '}))
+		// .pipe(pleeease(css.pleeeaseOpts))
+		// .pipe(size({title: 'CSS out '}))
 		.pipe(gulp.dest(css.out))
 		.pipe(browsersync.reload({ stream: true }));
 });
