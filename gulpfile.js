@@ -209,7 +209,7 @@ gulp.task('js', function() {
 			}))
 			.pipe(size({ title: 'JS in '}))
 			.pipe(stripdebug())
-			//.pipe(uglify())
+			.pipe(uglify())
 			.pipe(size({ title: 'JS out '}))
 			.pipe(gulp.dest(js.out));
 	}
