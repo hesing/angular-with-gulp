@@ -1,6 +1,3 @@
-// Gulp.js configuration
-
-// include gulp and plugins
 var fs = require("fs"),
 	gulp = require('gulp'),
 	newer = require('gulp-newer'),
@@ -19,7 +16,9 @@ var fs = require("fs"),
 	del = require('del'),
 	ngAnnotate = require('gulp-ng-annotate'),
 	sourcemaps = require('gulp-sourcemaps'),
+	compass = require('gulp-compass'),
 	browsersync = require('browser-sync'),
+	notify = require("gulp-notify"),
 	pkg = require('./package.json'),
 	config = require('./build-config.json');
 
@@ -62,11 +61,19 @@ var
 		watch: [source + 'scss/**/*', '!' + imguri.out + imguri.filename],
 		out: dest + 'css/',
 		sassOpts: {
-			outputStyle: 'nested', // compressed
+			outputStyle: 'expanded', // nested, expanded, compact, compressed, 
 			imagePath: '../images',
 			precision: 3,
+			sourceComments: 'map',
 			errLogToConsole: true
 		},
+		compassOpts:{
+		  style: 'expanded',
+	      css: dest + 'css/',
+	      sass: source+"scss/",
+	      image: 'images',
+	      sourcemap: true
+		}, 
 		pleeeaseOpts: {
 			autoprefixer: { browsers: ['last 2 versions', '> 2%'] },
 			rem: ['16px'],
@@ -173,16 +180,50 @@ gulp.task('fonts', function() {
 });
 
 
+gulp.task('compass', function() {
+	if (!devBuild) {
+		css.compassOpts.style = 'compressed';
+		css.compassOpts.sourcemap = false;
+	}
+
+  return gulp.src(source+"sass/**/*.scss")
+  	//.pipe(sourcemaps.init())
+    .pipe(compass(css.compassOpts))
+    .on('error', notify.onError(function (error) {
+        return 'An error occurred while compiling sass.\nLook in the console for details.\n' + error;
+    }))
+	//.pipe(sourcemaps.write())
+	.pipe(size({title: 'CSS in '}))
+	.pipe(pleeease(css.pleeeaseOpts))
+	.pipe(size({title: 'CSS out '}))
+	.pipe(gulp.dest(css.out))
+	.pipe(notify({
+        message: "Compilation Successful"
+    }))
+	.pipe(browsersync.reload({ stream: true }));
+});
+
 // compile Sass
 gulp.task('sass', ['imguri'], function() {
+	if (!devBuild) {
+		css.sassOpts.outputStyle = 'compressed';
+		delete css.sassOpts.sourceComments;
+	}
+
 	return gulp.src(css.in)
-		.pipe(sourcemaps.init())
+		//.pipe(sourcemaps.init())
 		.pipe(sass(css.sassOpts))
-		.pipe(sourcemaps.write())
-		// .pipe(size({title: 'CSS in '}))
-		// .pipe(pleeease(css.pleeeaseOpts))
-		// .pipe(size({title: 'CSS out '}))
+		.on('error', notify.onError(function (error) {
+            return 'An error occurred while compiling sass.\nLook in the console for details.\n' + error;
+        }))
+		//.pipe(sourcemaps.write())
+		.pipe(size({title: 'CSS in '}))
+		.pipe(pleeease(css.pleeeaseOpts))
+		.pipe(size({title: 'CSS out '}))
 		.pipe(gulp.dest(css.out))
+		.pipe(notify({
+            message: "Compilation Successful"
+        }))
 		.pipe(browsersync.reload({ stream: true }));
 });
 
@@ -239,7 +280,7 @@ gulp.task('browsersync', function() {
 });
 
 // default task
-gulp.task('default', ['html', 'images', 'fonts', 'sass', 'js', 'browsersync', 'copy'], function() {
+gulp.task('default', ['html', 'images', 'fonts', 'compass', 'js', 'browsersync', 'copy'], function() {
 
 	// html changes
 	gulp.watch(html.watch, ['html', browsersync.reload]);
