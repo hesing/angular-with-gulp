@@ -1,0 +1,8 @@
+﻿<div class="alertContainer">
+    <div ng-repeat="alert in currentAlerts" class="alert alert-{{alert.type}}">
+        {{ alert.message }}
+        <div class="close" ng-click="removeAlert(alert)">
+            <span class="ti-close"></span>
+        </div>
+    </div>
+</div>

@@ -1,8 +1,0 @@
-{
-"filesToCopy": [
-      "public/images/**/*.*",
-      "public/fonts/**/*.*",
-      "public/vendor/**/*.*",
-      "public/views/**/*.*"
-    ]
-}

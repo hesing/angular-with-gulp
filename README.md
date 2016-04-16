@@ -1,4 +1,6 @@
-# Grunt build with Angular JS
+# Gulp build with Angular JS
+
+Modular gulp build each task in it's own fles, Modular Angular App
 
 - clean build directory
 - concatenation js & css
@@ -7,33 +9,31 @@
 - js minification
 - image minification
 - js code linting 
-- watching js, css, html, less file changes
+- watching js, css, html, sass file changes
 - code versioning
 - Angular JS code annotation
 
+
 ## Run Application
 
-set env from `gulpfile.js`
-
 ```
-process.env.NODE_ENV = 'development';
-process.env.NODE_ENV = 'production';
+gulp or npm run dev
+// http://localhost:3000
 ```
 
-```
-node server.js
-// http://localhost:5000
-```
+## How to use
+
+- all html changes inside `components/` corresponding folder
+- all js in `components/`
+- all 3rd party module in `vendor` folder
+- all common css inside `css` folder
+- all component specific css inside corresponding `components/` folder 
 
 ## Build Step
 
 ```
-gulp 
+npm run build ( production )
 ```
-
-**Note:**
-
-Sourcemap have some problem with autoprefixer (gulp-pleeeese) so commented, un-comment for prefixing.
 
 
 

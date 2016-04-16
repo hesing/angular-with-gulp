@@ -1,0 +1,23 @@
+<div class="row" id="users">
+    <div class="col-sm-8 col-sm-offset-2">
+        <h1>All Users</h1>
+        <table class="table table-condensed">
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Username</th>
+                    <th>Email</th>
+                    <th>Phone</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr ng-repeat="photo in photos">
+                    <td>{{ photo.name }}</td>
+                    <td>{{ photo.username }}</td>
+                    <td>{{ photo.email }}</td>
+                    <td>{{ photo.phone }}</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
